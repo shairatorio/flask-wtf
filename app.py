@@ -1,17 +1,37 @@
 # Importing Libraries
 from flask import Flask, render_template
 from flask_wtf import FlaskForm, CSRFProtect
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms import DecimalField, RadioField, SelectField, TextAreaField, FileField, SubmitField
+from config import DevelopmentConfig, TestingConfig, ProductionConfig
+from wtforms import (
+    StringField, PasswordField, BooleanField,
+    DecimalField, RadioField, SelectField, 
+    TextAreaField, FileField, SubmitField
+)
 from wtforms.validators import InputRequired, Length
 from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 import os
 
+# App Initialization
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'secretkey'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# Load base config first
+app.config.from_object('config.Config')
+
+# Then override depending on environment
+env = os.getenv('FLASK_ENV', 'development')
+if env == 'development':
+    app.config.from_object('config.DevelopmentConfig')
+elif env == 'testing':
+    app.config.from_object('config.TestingConfig')
+else:
+    app.config.from_object('config.ProductionConfig')
+
+# Optional: Load additional config file if specified by environment variable
+# Example usage:
+# export FLASK_CONFIG_FILE=/path/to/config.py
+if os.getenv('FLASK_CONFIG_FILE'):
+    app.config.from_envvar('FLASK_CONFIG_FILE')
 
 # Enable global CSRF protection
 csrf = CSRFProtect(app) 
@@ -29,6 +49,7 @@ class RegistrationForm(FlaskForm):
     country = SelectField('Country', choices=[('US', 'United States'), ('CA', 'Canada')], validators=[InputRequired()])
     message = TextAreaField('Message', validators=[InputRequired()])
     profile_picture = FileField('Profile Picture')
+    submit = SubmitField('Submit')
     
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired('Username Required'), Length(min=4, max=15, message='Username must be between 4 and 15 characters')])
@@ -81,4 +102,4 @@ def signup():
     return render_template('signup.html', form=form)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=app.config['DEBUG'])
