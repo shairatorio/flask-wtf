@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Form</title>
+</head>
+<body>
+    <h1>My Form</h1>
+    <!--
+    | Expression            | Meaning                | Output (example)                                             |
+    | `form.username`       | The field object       | `<wtforms.fields.simple.StringField object>`                 |
+    | `form.username.data`  | The user’s input value | `John`                                                       |
+    | `form.username.label` | The HTML `<label>`     | `<label for="username">Username</label>`                     |
+    | `form.username()`     | The HTML `<input>`     | `<input id="username" name="username" type="text" value="">` |
+    -->
+    <form method="post" action="{{ url_for('index') }}" enctype="multipart/form-data">
+        <!-- CSRF token + hidden fields -->
+        {{ form.hidden_tag() }}
+        
+        <p>{{ form.username.label }} {{ form.username(class="form-control", placeholder="Enter your username") }}</p>
+        <p>{{ form.password.label }} {{ form.password() }}</p>
+        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p>{{ form.salary.label }} {{ form.salary() }}</p>
+        <p>{{ form.gender.label }} {{ form.gender() }}</p>
+        <p>{{ form.country.label }} {{ form.country() }}</p>
+        <p>{{ form.message.label }} {{ form.message() }}</p>
+        <p>{{ form.profile_picture.label }} {{ form.profile_picture() }}</p>
+        <p><input type="submit" value="Submit"></p>
+    </form>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+</head>
+<body>
+    <!--
+    | Expression            | Meaning                | Output (example)                                           |
+    | `form.username.label` | The HTML `<label>`     | `<label for="username">Username</label>`                   |
+    | `form.username`     | The HTML `<input>`     | `<input id="username" name="username" type="text" value="">` |
+    -->
+    <form action="{{ url_for('signup') }}" method="post">
+        <!-- CSRF token + hidden fields -->
+        {{ form.hidden_tag() }}
+
+        {{ form.username.label }} 
+        {{ form.username }} 
+        <br>
+        <br>
+        {{ form.password.label }} 
+        {{ form.password }} 
+        <br>
+        <br>
+        {{ form.submit }}
+    </form>
+</body>
+</html>
